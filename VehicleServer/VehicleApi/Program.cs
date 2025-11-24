@@ -8,6 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Configure CORS to accept anything
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Configure AppSettings with environment variable support
 builder.Services.Configure<AppSettings>(options =>
 {
@@ -26,6 +37,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseCors(); // Must be placed before UseHttpsRedirection and UseAuthorization
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

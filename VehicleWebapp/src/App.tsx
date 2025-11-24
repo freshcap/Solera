@@ -1,34 +1,36 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import PromptTester from './components/PromptTester'
+import ChartView from './components/ChartView'
+
+const pages = [
+  { id: 'claude', label: 'Claude', element: <PromptTester /> },
+  { id: 'chart', label: 'Chart', element: <ChartView /> },
+] as const
+
+type PageId = (typeof pages)[number]['id']
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activePage, setActivePage] = useState<PageId>('claude')
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app-page">
+      <nav className="app-navbar">
+        <div className="nav-tabs">
+          {pages.map((page) => (
+            <button
+              key={page.id}
+              type="button"
+              className={page.id === activePage ? 'active' : ''}
+              onClick={() => setActivePage(page.id)}
+            >
+              {page.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+      <main>{pages.find((page) => page.id === activePage)?.element}</main>
+    </div>
   )
 }
 

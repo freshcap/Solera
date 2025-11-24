@@ -21,7 +21,7 @@ public class VehicleRepository : IVehicleRepository
     public async Task<IEnumerable<VehicleData>> TestGet()
     {
         using var connection = new SqlConnection(_connectionString);
-        var vehicles = await connection.QueryAsync<VehicleData>("SELECT TOP 100 * FROM VehicleData");
+        var vehicles = await connection.QueryAsync<VehicleData>("SELECT TOP 10000 * FROM VehicleData order by q22025 desc");
         
         return vehicles;
     }
