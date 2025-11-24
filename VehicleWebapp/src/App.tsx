@@ -4,8 +4,8 @@ import PromptTester from './components/PromptTester'
 import ChartView from './components/ChartView'
 
 const pages = [
-  { id: 'claude', label: 'Claude', element: <PromptTester /> },
   { id: 'chart', label: 'Chart', element: <ChartView /> },
+  { id: 'claude', label: 'Claude', element: <PromptTester /> },
 ] as const
 
 type PageId = (typeof pages)[number]['id']
