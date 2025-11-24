@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".copilotignore" />
+    <File Path=".gitignore" />
+    <File Path="Create Database.sql" />
+    <File Path="Notes.md" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="LoadData/LoadData.csproj" />
+  </Folder>
+  <Project Path="VehicleApi/VehicleApi.csproj" Id="bde232ce-edc5-49d8-b0e9-68d3384d11a9" />
+</Solution>
