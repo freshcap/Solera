@@ -31,7 +31,7 @@ try
             // Change 2024 Q1 to Q1_2024
             if (Regex.IsMatch(header, @"\d{4} Q[1-4]"))
             {
-                columnName = $"{header[5..]}_{header[..4]}";
+                columnName = $"{header[5..]}{header[..4]}";
             }
             dataTable.Columns.Add(columnName);
         }
