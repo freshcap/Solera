@@ -6,7 +6,7 @@ namespace VehicleApi.Data;
 
 public interface IVehicleRepository
 {
-    Task<IEnumerable<VehicleData>> TestGet();
+    Task<IEnumerable<TestSumVehicle>> TestGet();
 }
 
 public class VehicleRepository : IVehicleRepository
@@ -18,10 +18,10 @@ public class VehicleRepository : IVehicleRepository
         _connectionString = settings.Value.DbConnectionString;
     }
 
-    public async Task<IEnumerable<VehicleData>> TestGet()
+    public async Task<IEnumerable<TestSumVehicle>> TestGet()
     {
         using var connection = new SqlConnection(_connectionString);
-        var vehicles = await connection.QueryAsync<VehicleData>("SELECT TOP 10000 * FROM VehicleData order by q22025 desc");
+        var vehicles = await connection.QueryAsync<TestSumVehicle>("SELECT top 50 Make, Model, sum(value) as Total FROM VehicleData where year = 2025 group by make, model order by total desc");
         
         return vehicles;
     }

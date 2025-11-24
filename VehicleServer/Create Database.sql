@@ -6,8 +6,39 @@ GO
 USE Solera;
 GO
 
--- Create the table
+-- Create the normalized data table
 CREATE TABLE VehicleData (
+    BodyType NVARCHAR(50) NOT NULL,
+    Make NVARCHAR(50) NOT NULL,
+    GenModel NVARCHAR(100) NOT NULL,
+    Model NVARCHAR(100) NOT NULL,
+    Fuel NVARCHAR(50) NOT NULL,
+    LicenceStatus NVARCHAR(20) NOT NULL,
+    Year INT NOT NULL,
+    Quarter INT NOT NULL,
+    Value INT NOT NULL
+);
+GO
+
+-- Create clustered index on Year and Quarter
+CREATE CLUSTERED INDEX IX_VehicleData_Year_Quarter 
+ON VehicleData (Year, Quarter);
+GO
+
+-- Create non-clustered index on Make
+CREATE NONCLUSTERED INDEX IX_VehicleData_Make 
+ON VehicleData (Make);
+GO
+
+-- Create non-clustered index on Fuel
+CREATE NONCLUSTERED INDEX IX_VehicleData_Fuel 
+ON VehicleData (Fuel);
+GO
+
+-- Other indexes as needed...
+
+-- Create the raw data table
+CREATE TABLE VehicleDataRaw (
     BodyType NVARCHAR(50) NOT NULL,
     Make NVARCHAR(50) NOT NULL,
     GenModel NVARCHAR(100) NOT NULL,

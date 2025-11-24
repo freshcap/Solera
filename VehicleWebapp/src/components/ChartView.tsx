@@ -1,34 +1,17 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js'
-import { Line } from 'react-chartjs-2'
+import { Pie } from 'react-chartjs-2'
 import type { VehicleData } from '../data/VehicleData'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
+ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
 const API_URL = 'http://localhost:5210/test/data'
-
-interface YearlyTotals {
-  [make: string]: {
-    [year: number]: number
-  }
-}
 
 function ChartView() {
   const [data, setData] = useState<VehicleData[]>([])
@@ -69,41 +52,26 @@ function ChartView() {
   const chartData = useMemo(() => {
     if (data.length === 0) return null
 
-    // Aggregate totals by make and year
-    const totals: YearlyTotals = {}
-    const allYears = new Set<number>()
+    // Aggregate totals by make and model combination
+    const totals: { [key: string]: number } = {}
 
     data.forEach((vehicle) => {
-      if (!totals[vehicle.make]) {
-        totals[vehicle.make] = {}
+      const label = `${vehicle.make} - ${vehicle.model}`
+      if (!totals[label]) {
+        totals[label] = 0
       }
-
-      // Extract all quarterly fields and sum by year
-      Object.keys(vehicle).forEach((key) => {
-        if (key.startsWith('q') && typeof vehicle[key as keyof VehicleData] === 'number') {
-          // Extract year from field name (e.g., "q22025" -> 2025)
-          const match = key.match(/q\d+(\d{4})/)
-          if (match) {
-            const year = parseInt(match[1], 10)
-            allYears.add(year)
-            const value = vehicle[key as keyof VehicleData] as number
-
-            if (!totals[vehicle.make][year]) {
-              totals[vehicle.make][year] = 0
-            }
-            totals[vehicle.make][year] += value
-          }
-        }
-      })
+      totals[label] += vehicle.total
     })
 
-    // Sort years
-    const sortedYears = Array.from(allYears).sort((a, b) => a - b)
+    // Sort by total (descending) and take top entries for better visualization
+    const entries = Object.entries(totals)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20) // Limit to top 20 for readability
 
-    // Get all makes
-    const makes = Object.keys(totals).sort()
+    const labels = entries.map(([label]) => label)
+    const values = entries.map(([, total]) => total)
 
-    // Generate colors for each make
+    // Generate colors for each segment
     const colors = [
       '#6366f1',
       '#10b981',
@@ -113,22 +81,31 @@ function ChartView() {
       '#06b6d4',
       '#ec4899',
       '#84cc16',
+      '#f97316',
+      '#14b8a6',
+      '#a855f7',
+      '#eab308',
+      '#22c55e',
+      '#3b82f6',
+      '#ec4899',
+      '#f43f5e',
+      '#0ea5e9',
+      '#8b5cf6',
+      '#06b6d4',
+      '#10b981',
     ]
 
-    const datasets = makes.map((make, index) => {
-      const values = sortedYears.map((year) => totals[make][year] || 0)
-      return {
-        label: make,
-        data: values,
-        borderColor: colors[index % colors.length],
-        backgroundColor: colors[index % colors.length] + '40',
-        tension: 0.1,
-      }
-    })
-
     return {
-      labels: sortedYears.map((y) => y.toString()),
-      datasets,
+      labels,
+      datasets: [
+        {
+          label: 'Total Vehicles',
+          data: values,
+          backgroundColor: colors.slice(0, labels.length),
+          borderColor: '#ffffff',
+          borderWidth: 2,
+        },
+      ],
     }
   }, [data])
 
@@ -159,39 +136,38 @@ function ChartView() {
   return (
     <div className="chart-view">
       <header>
-        <h1>Vehicle Totals by Make</h1>
+        <h1>Vehicle Totals by Make and Model</h1>
         <p className="subtitle">
-          Line chart showing total vehicles by make for each year
+          Pie chart showing total vehicles by make and model
         </p>
       </header>
 
       <div className="chart-container">
-        <Line
+        <Pie
           data={chartData}
           options={{
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                position: 'top' as const,
+                position: 'right' as const,
               },
               title: {
                 display: true,
-                text: 'Vehicle Totals by Make Over Time',
+                text: 'Vehicle Distribution by Make and Model',
               },
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'Total Vehicles',
-                },
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Year',
+              tooltip: {
+                callbacks: {
+                  label: (context) => {
+                    const label = context.label || ''
+                    const value = context.parsed || 0
+                    const total = context.dataset.data.reduce(
+                      (a: number, b: number) => a + b,
+                      0
+                    ) as number
+                    const percentage = ((value / total) * 100).toFixed(1)
+                    return `${label}: ${value.toLocaleString()} (${percentage}%)`
+                  },
                 },
               },
             },
@@ -203,3 +179,4 @@ function ChartView() {
 }
 
 export default ChartView
+
