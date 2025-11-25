@@ -211,3 +211,84 @@ button:disabled {
   padding: 1.5rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
 }
+
+/* Yearly View Styles */
+.yearly-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.yearly-view header {
+  text-align: center;
+}
+
+.yearly-controls {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.filter-select {
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: inherit;
+  background: #fff;
+  cursor: pointer;
+  transition: all 180ms ease;
+  min-width: 200px;
+}
+
+.filter-select:focus {
+  border-color: #6366f1;
+  outline: 3px solid rgba(99, 102, 241, 0.25);
+}
+
+.yearly-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.total-card {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+  color: #fff;
+}
+
+.total-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.total-card-label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.total-card-value {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}

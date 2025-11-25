@@ -1,8 +1,9 @@
-# SQL Servier
-(localdb)\MSSQLLocalDB
-db = Solera
-auth = Windows auth
-Connection string = Server=(localdb)\\MSSQLLocalDB;Database=Solera;Integrated Security=true;TrustServerCertificate=True;
+# Not Implemented:
+- Security (probably OAuth?)
+- Secrets (using environment variables)
+- Logging / Error logging (global handler in API, Console for web)
+- Caching queries (Redis / in memory)
+- Tests (asked not do make them for this exercise, to save time)
 
-# Claude
-Key in env var named ANTHROPIC_API_KEY
+# Notes
+
