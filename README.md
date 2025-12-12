@@ -1,8 +1,5 @@
 # UK Vehicle Trends Analysis - Project Summary
 
-## Code Repository
-[Link to my GitHub repository for this exercise: ] (https://github.com/freshcap/Solera)
-
 ## Assignment Overview
 
 **Objective:** Create an interactive website that provides analysis of trends for vehicles currently on the road in the UK using DVLA data.
