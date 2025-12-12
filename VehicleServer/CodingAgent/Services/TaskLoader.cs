@@ -29,23 +29,20 @@ public class TaskLoader : ITaskLoader
             }
 
             var json = await File.ReadAllTextAsync(filePath);
-            var taskCollection = JsonSerializer.Deserialize<TaskCollection>(json, new JsonSerializerOptions
+            var tasks = JsonSerializer.Deserialize<List<TaskDefinition>>(json, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            });
+            }) ?? [];
 
-            if (taskCollection?.Tasks == null || taskCollection.Tasks.Count == 0)
+            if (tasks.Count == 0)
             {
                 _logger.LogWarning("No tasks found in file: {FilePath}", filePath);
                 return new List<TaskDefinition>();
             }
 
-            // Sort by priority
-            var sortedTasks = taskCollection.Tasks.OrderBy(t => t.Priority).ToList();
+            _logger.LogInformation("Loaded {Count} tasks from {FilePath}", tasks.Count, filePath);
 
-            _logger.LogInformation("Loaded {Count} tasks from {FilePath}", sortedTasks.Count, filePath);
-
-            return sortedTasks;
+            return tasks;
         }
         catch (Exception ex)
         {

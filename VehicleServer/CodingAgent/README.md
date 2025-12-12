@@ -53,11 +53,10 @@ Edit `tasks.json` to define the tasks you want the agent to complete:
     {
       "id": "task-001",
       "description": "Add XML documentation to VehicleController",
-      "relevantFiles": [
-        "VehicleApi/Controllers/VehicleController.cs"
-      ],
       "context": "Add comprehensive XML comments following C# standards",
-      "priority": 1
+      "approvalRequired": false,
+      "phase": "api",
+      "expectedOutputs": []
     }
   ]
 }
@@ -67,10 +66,23 @@ Edit `tasks.json` to define the tasks you want the agent to complete:
 
 ### Run the Agent
 
-```bash
-cd VehicleServer/CodingAgent
+**Normal mode (applies changes):**
+```cmd
+cd VehicleServer\CodingAgent
 dotnet run
 ```
+
+**Dry-run mode (preview only, no changes applied):**
+```cmd
+cd VehicleServer\CodingAgent
+dotnet run -- --dry-run
+```
+
+The `--dry-run` flag allows you to:
+- See what changes the agent would make
+- Review the diff preview without applying any changes
+- Test your task definitions safely
+- No builds are run, no commits are made
 
 ### Monitor Progress
 
@@ -95,9 +107,14 @@ Each task in `tasks.json` must have:
 
 - **id**: Unique identifier for the task
 - **description**: What needs to be done
-- **relevantFiles**: Array of file paths that Claude should read and potentially modify
 - **context**: Additional context or requirements
-- **priority**: Lower numbers execute first (1, 2, 3, ...)
+- **approvalRequired**: (boolean) Whether to pause for human review before applying changes
+- **phase**: (optional string) Grouping like "database", "api", "react"
+- **expectedOutputs**: (optional array) Files expected to be created/modified
+
+**Note**:
+- Tasks are executed in the order they appear in the JSON array
+- The agent automatically discovers relevant files based on the task description and project structure
 
 ## Safety Features
 

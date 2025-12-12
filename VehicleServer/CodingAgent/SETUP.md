@@ -52,20 +52,40 @@ Example task:
 {
   "id": "task-001",
   "description": "Add logging to the GetVehicles endpoint",
-  "relevantFiles": [
-    "VehicleApi/Controllers/VehicleController.cs"
-  ],
   "context": "Add ILogger dependency injection and log entry/exit of GetVehicles method",
-  "priority": 1
+  "approvalRequired": false,
+  "phase": "api",
+  "expectedOutputs": []
 }
 ```
 
+**Autonomy fields:**
+- `approvalRequired`: Set to `true` to review changes before applying
+- `phase`: Organize tasks by category (e.g., "api", "database", "react")
+- `expectedOutputs`: Hint which files should be created/modified
+
+**Note:**
+- Tasks execute in the order they appear in the JSON array
+- The agent automatically discovers relevant files based on task description
+
 ### Step 4: Run the Agent
 
-```bash
-cd VehicleServer/CodingAgent
+**Normal mode (applies changes):**
+```cmd
+cd VehicleServer\CodingAgent
 dotnet run
 ```
+
+**Dry-run mode (preview only):**
+```cmd
+cd VehicleServer\CodingAgent
+dotnet run -- --dry-run
+```
+
+Use `--dry-run` to preview changes without applying them. This is useful for:
+- Testing new task definitions
+- Reviewing what the agent will do before committing
+- Experimenting with different prompts safely
 
 ## Task Definition Best Practices
 
@@ -73,16 +93,16 @@ dotnet run
 ❌ Bad: "Improve the controller"
 ✅ Good: "Add input validation to all VehicleController endpoints"
 
-### 2. Include All Relevant Files
-If a task might need to modify multiple files, list them all:
+### 2. Use Expected Outputs (Optional)
+If you know which files should be created/modified, list them as hints:
 
 ```json
-"relevantFiles": [
-  "VehicleApi/Controllers/VehicleController.cs",
-  "VehicleApi/Models/VehicleRequest.cs",
-  "VehicleApi/Services/VehicleService.cs"
+"expectedOutputs": [
+  "VehicleApi/Controllers/HealthController.cs"
 ]
 ```
+
+The agent will automatically discover other relevant files based on your task description.
 
 ### 3. Provide Context
 Give Claude enough context to understand the requirements:
@@ -91,17 +111,16 @@ Give Claude enough context to understand the requirements:
 "context": "Follow the existing validation pattern used in UserController. Return 400 Bad Request for invalid inputs with descriptive error messages."
 ```
 
-### 4. Use Priority
-Order tasks by priority (lower numbers = higher priority):
+### 4. Order Tasks
+Tasks are executed in the order they appear in the array. Arrange your tasks from first to last:
 
 ```json
 {
-  "id": "task-001",
-  "priority": 1  // Will run first
-},
-{
-  "id": "task-002",
-  "priority": 2  // Will run second
+  "tasks": [
+    { "id": "task-001", ... },  // Runs first
+    { "id": "task-002", ... },  // Runs second
+    { "id": "task-003", ... }   // Runs third
+  ]
 }
 ```
 
@@ -225,7 +244,7 @@ The agent tracks progress in `.agent-state.json`:
 **Problem**: Git user not configured or repository issues.
 
 **Solution**: Configure git:
-```bash
+```cmd
 git config user.name "Your Name"
 git config user.email "your.email@example.com"
 ```
@@ -255,14 +274,7 @@ max_tokens = 4000,  // Default is 2000
 
 ### Running Specific Tasks
 
-Temporarily remove tasks from `tasks.json` to run only specific ones, or adjust their priority.
-
-### Dry Run Mode
-
-Currently not implemented, but you could:
-1. Comment out the `ApplyFileChanges` call in `AgentOrchestrator.cs`
-2. Review the parsed changes in logs
-3. Manually apply changes you approve
+Temporarily remove tasks from `tasks.json` to run only specific ones, or reorder them in the array.
 
 ## File Locations
 
@@ -272,9 +284,8 @@ Currently not implemented, but you could:
 
 ## Example Session
 
-```bash
-$ cd VehicleServer/CodingAgent
-$ dotnet run
+```cmd
+C:\Coding\Solera\VehicleServer\CodingAgent> dotnet run
 
 ========================================
 Autonomous Coding Agent Starting

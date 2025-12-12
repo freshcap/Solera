@@ -11,6 +11,9 @@ class Program
 {
     static async Task<int> Main(string[] args)
     {
+        // Parse command line arguments
+        var dryRun = args.Contains("--dry-run");
+
         // Build configuration
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -104,7 +107,8 @@ class Program
                 sp.GetRequiredService<ILogger<AgentOrchestrator>>(),
                 dotnetProjectPath,
                 npmProjectPath,
-                maxRetries));
+                maxRetries,
+                dryRun));
 
         // Build service provider
         var serviceProvider = services.BuildServiceProvider();
@@ -121,6 +125,12 @@ class Program
             logger.LogInformation(".NET Project: {DotNetProject}", dotnetProjectPath);
             logger.LogInformation("npm Project: {NpmProject}", npmProjectPath);
             logger.LogInformation("Max Retries: {MaxRetries}", maxRetries);
+
+            if (dryRun)
+            {
+                logger.LogWarning("DRY RUN MODE ENABLED - No changes will be applied");
+            }
+
             logger.LogInformation("========================================");
 
             // Load state

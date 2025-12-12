@@ -23,6 +23,7 @@ public class AgentOrchestrator
     private readonly string _dotnetProjectPath;
     private readonly string _npmProjectPath;
     private readonly int _maxRetries;
+    private readonly bool _dryRun;
 
     public AgentOrchestrator(
         IClaudeClient claudeClient,
@@ -39,7 +40,8 @@ public class AgentOrchestrator
         ILogger<AgentOrchestrator> logger,
         string dotnetProjectPath,
         string npmProjectPath,
-        int maxRetries = 3)
+        int maxRetries = 3,
+        bool dryRun = false)
     {
         _claudeClient = claudeClient;
         _fileSystem = fileSystem;
@@ -56,6 +58,7 @@ public class AgentOrchestrator
         _dotnetProjectPath = dotnetProjectPath;
         _npmProjectPath = npmProjectPath;
         _maxRetries = maxRetries;
+        _dryRun = dryRun;
     }
 
     public async Task<bool> ExecuteTask(TaskDefinition task)
@@ -67,6 +70,12 @@ public class AgentOrchestrator
             _logger.LogInformation("Phase: {Phase}", task.Phase);
         }
         _logger.LogInformation("Approval Required: {ApprovalRequired}", task.ApprovalRequired);
+
+        if (_dryRun)
+        {
+            _logger.LogWarning("DRY RUN MODE - Changes will NOT be applied");
+        }
+
         _logger.LogInformation("========================================");
 
         var taskResult = new TaskResult
@@ -137,7 +146,32 @@ public class AgentOrchestrator
                     continue;
                 }
 
-                // Step 6: If approval required, show diff and get approval
+                // Step 6: In dry-run mode, show preview and exit
+                if (_dryRun)
+                {
+                    _logger.LogInformation("========================================");
+                    _logger.LogInformation("DRY RUN - Proposed Changes Preview");
+                    _logger.LogInformation("========================================");
+
+                    var diffPreview = await _diffPreview.GenerateDiffPreview(fileChanges, _fileSystem);
+                    Console.WriteLine(diffPreview);
+
+                    _logger.LogInformation("========================================");
+                    _logger.LogInformation("DRY RUN COMPLETE - No changes applied");
+                    _logger.LogInformation("Files that would be modified: {Count}", fileChanges.Count);
+                    foreach (var change in fileChanges)
+                    {
+                        _logger.LogInformation("  - {Type}: {Path}", change.Type, change.FilePath);
+                    }
+                    _logger.LogInformation("========================================");
+
+                    taskResult.Success = true;
+                    taskResult.Changes = fileChanges;
+                    taskResult.CompletedAt = DateTime.Now;
+                    return true;
+                }
+
+                // Step 7: If approval required, show diff and get approval
                 if (task.ApprovalRequired)
                 {
                     var diffPreview = await _diffPreview.GenerateDiffPreview(fileChanges, _fileSystem);
