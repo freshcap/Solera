@@ -1,0 +1,41 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "description": "Add XML documentation comments to the VehicleController class",
+      "context": "Add comprehensive XML documentation comments to all public methods in VehicleController. Follow C# XML documentation standards.",
+      "approvalRequired": false,
+      "phase": "api",
+      "expectedOutputs": []
+    },
+    {
+      "id": "task-002",
+      "description": "Add input validation to VehicleController endpoints",
+      "context": "Add proper input validation for all controller endpoints. Validate that required parameters are not null or empty. Return appropriate HTTP status codes (400 Bad Request) for invalid inputs.",
+      "approvalRequired": true,
+      "phase": "api",
+      "expectedOutputs": []
+    },
+    {
+      "id": "task-003",
+      "description": "Create a health check endpoint",
+      "context": "Create a new HealthController with a GET endpoint at /api/health that returns a 200 OK status with a simple JSON response containing status and timestamp. Register the controller in the application.",
+      "approvalRequired": true,
+      "phase": "api",
+      "expectedOutputs": [
+        "VehicleApi/Controllers/HealthController.cs"
+      ]
+    },
+    {
+      "id": "task-004",
+      "description": "Add a loading spinner component to the React app",
+      "context": "Create a reusable LoadingSpinner React component using TypeScript. The component should accept a 'size' prop (small, medium, large) and display an animated spinner. Use modern CSS for the animation.",
+      "approvalRequired": true,
+      "phase": "react",
+      "expectedOutputs": [
+        "../VehicleWebapp/src/components/LoadingSpinner.tsx",
+        "../VehicleWebapp/src/components/LoadingSpinner.css"
+      ]
+    }
+  ]
+}

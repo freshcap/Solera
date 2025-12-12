@@ -8,6 +8,7 @@
   <Folder Name="/Tools/">
     <Project Path="LoadData/LoadData.csproj" />
     <Project Path="Tests/Tests.csproj" Id="98bc8ef0-d13d-4069-9049-aa048508f2ac" />
+    <Project Path="CodingAgent/CodingAgent.csproj" />
   </Folder>
   <Project Path="Common/Common.csproj" Id="ea08fcbc-9be3-4fa3-bebd-16624899469c" />
   <Project Path="VehicleApi/VehicleApi.csproj" Id="bde232ce-edc5-49d8-b0e9-68d3384d11a9" />
