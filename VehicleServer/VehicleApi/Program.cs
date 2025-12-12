@@ -1,3 +1,4 @@
+using Common;
 using VehicleApi;
 using VehicleApi.Clients;
 using VehicleApi.Data;

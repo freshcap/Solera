@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VehicleApi.Clients;
+﻿using Common;
+using Microsoft.AspNetCore.Mvc;
 using VehicleApi.Data;
 
 namespace VehicleApi.Controllers;
